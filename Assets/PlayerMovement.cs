@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.InputSystem; // ✅ new input system
+using UnityEngine.InputSystem; // new input system
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -15,7 +15,7 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector2 input = Vector2.zero;
 
-        // ✅ Replace old Input.GetAxis with Keyboard.current checks
+        //  Replace old Input.GetAxis with Keyboard.current checks
         if (Keyboard.current.wKey.isPressed) input.y += 1;
         if (Keyboard.current.sKey.isPressed) input.y -= 1;
         if (Keyboard.current.dKey.isPressed) input.x += 1;
