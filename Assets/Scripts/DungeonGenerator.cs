@@ -5,14 +5,14 @@ using UnityEngine;
 
 public class DungeonGenerator : MonoBehaviour
 {
-    // --- 🔹 Represents one cell (or tile) in the dungeon grid ---
+    // --- Represents one cell (or tile) in the dungeon grid ---
     public class Cell
     {
         public bool visited = false;   // True if this cell has already been explored/used
         public bool[] status = new bool[4]; // Represents walls or passages in 4 directions (Up, Down, Right, Left)
     }
 
-    // --- 🔹 Defines rules for spawning rooms ---
+    // --- Defines rules for spawning rooms ---
     [System.Serializable]
     public class Rule
     {
@@ -42,7 +42,7 @@ public class DungeonGenerator : MonoBehaviour
         }
     }
 
-    // --- 🔹 Variables set in the Unity Inspector ---
+    // ---  Variables set in the Unity Inspector ---
     public Vector2Int size;          // Size of the dungeon grid (X = width, Y = height)
     public int startPos = 0;         // Starting cell index (usually 0)
     public Rule[] rooms;             // Array of room types and their spawning rules
@@ -52,14 +52,14 @@ public class DungeonGenerator : MonoBehaviour
     // --- Internal dungeon data ---
     List<Cell> board; // Stores all cells of the dungeon grid
 
-    // --- 🔹 Unity Start() method ---
+    // --- Unity Start() method ---
     void Start()
     {
         // Start the entire maze/dungeon generation process
         MazeGenerator();
     }
 
-    // --- 🔹 Generates the actual dungeon based on the maze data ---
+    // ---  Generates the actual dungeon based on the maze data ---
     void GenerateDungeon()
     {
         // Loop through all coordinates of the grid
@@ -127,7 +127,7 @@ public class DungeonGenerator : MonoBehaviour
         }
     }
 
-    // --- 🔹 Generates the maze layout using Depth-First Search (DFS) ---
+    // --- Generates the maze layout using Depth-First Search (DFS) ---
     void MazeGenerator()
     {
         board = new List<Cell>();
@@ -223,7 +223,7 @@ public class DungeonGenerator : MonoBehaviour
         // After maze generation, build the actual rooms
         GenerateDungeon();
 
-        // --- 🔹 Spawn player safely ---
+        // --- Spawn player safely ---
         if (player != null)
         {
             int startX = startPos % size.x;
@@ -250,7 +250,7 @@ public class DungeonGenerator : MonoBehaviour
         }
     }
 
-    // --- 🔹 Checks which neighboring cells can be visited next ---
+    // --- Checks which neighboring cells can be visited next ---
     List<int> CheckNeighbors(int cell)
     {
         List<int> neighbors = new List<int>();

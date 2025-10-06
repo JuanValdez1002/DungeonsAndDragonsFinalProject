@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class Dungeon3DGenerator : MonoBehaviour
 {
-    // --- 🔹 Represents one cell (room space) in the dungeon grid ---
+    // --- Represents one cell (room space) in the dungeon grid ---
     public class Cell
     {
         public bool visited = false;          // True if part of the generated dungeon
         public bool[] status = new bool[6];   // 0=Up, 1=Down, 2=Right, 3=Left, 4=Above, 5=Below
     }
 
-    // --- 🔹 Room spawning rules (optional for future customization) ---
+    // --- Room spawning rules (optional for future customization) ---
     [System.Serializable]
     public class Rule
     {
@@ -33,7 +33,7 @@ public class Dungeon3DGenerator : MonoBehaviour
         }
     }
 
-    // --- 🔹 Inspector variables (set in Unity) ---
+    // --- Inspector variables (set in Unity) ---
     public Vector3Int size = new Vector3Int(5, 5, 3);  // Width, Depth, Levels
     public int startPos = 0;                           // Start cell index
     public Rule[] rooms;                               // Room rules (optional)
@@ -42,7 +42,7 @@ public class Dungeon3DGenerator : MonoBehaviour
     public GameObject hallwayPrefab;                   // Hallway prefab between rooms
     public GameObject player;                          // Player object
 
-    // --- 🔹 Internal data ---
+    // --- Internal data ---
     private List<Cell> board;
 
     void Start()
@@ -50,7 +50,7 @@ public class Dungeon3DGenerator : MonoBehaviour
         MazeGenerator();
     }
 
-    // --- 🔹 Generates the 3D maze layout ---
+    // --- Generates the 3D maze layout ---
     void MazeGenerator()
     {
         board = new List<Cell>();
@@ -71,7 +71,7 @@ public class Dungeon3DGenerator : MonoBehaviour
         Stack<int> path = new Stack<int>();
         int k = 0;
 
-        // 🔸 Depth-first search (DFS) generation algorithm
+        //  Depth-first search (DFS) generation algorithm
         while (k < 5000)
         {
             k++;
@@ -104,7 +104,7 @@ public class Dungeon3DGenerator : MonoBehaviour
         SpawnPlayer();
     }
 
-    // --- 🔹 Connects two neighboring cells ---
+    // --- Connects two neighboring cells ---
     void ConnectCells(int current, int next)
     {
         int diff = next - current;
@@ -123,7 +123,7 @@ public class Dungeon3DGenerator : MonoBehaviour
         else if (diff == -size.x * size.y) { board[current].status[5] = true; board[next].status[4] = true; }
     }
 
-    // --- 🔹 Builds the dungeon in Unity world space ---
+    // --- Builds the dungeon in Unity world space ---
     void GenerateDungeon()
     {
         for (int z = 0; z < size.z; z++)
@@ -158,7 +158,7 @@ public class Dungeon3DGenerator : MonoBehaviour
         }
     }
 
-    // --- 🔹 Adds hallways where rooms connect ---
+    // --- Adds hallways where rooms connect ---
     void SpawnHallways(int x, int y, int z, Cell cell)
     {
         Vector3 basePos = new Vector3(x * offset.x, z * offset.y, -y * offset.z);
@@ -170,7 +170,7 @@ public class Dungeon3DGenerator : MonoBehaviour
         if (cell.status[1]) Instantiate(hallwayPrefab, basePos + new Vector3(0, 0, -offset.z / 2), Quaternion.identity, transform);  // Down
     }
 
-    // --- 🔹 Finds available unvisited neighbors (3D) ---
+    // --- Finds available unvisited neighbors (3D) ---
     List<int> CheckNeighbors(int cell)
     {
         List<int> neighbors = new List<int>();
@@ -200,7 +200,7 @@ public class Dungeon3DGenerator : MonoBehaviour
         return neighbors;
     }
 
-    // --- 🔹 Spawns the player safely in the first room ---
+    // --- Spawns the player safely in the first room ---
     void SpawnPlayer()
     {
         if (player != null)

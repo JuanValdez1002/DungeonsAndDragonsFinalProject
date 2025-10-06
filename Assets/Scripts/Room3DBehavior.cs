@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Room3DBehavior : MonoBehaviour
 {
-    // --- 🔹 Assign these in the Inspector for each room prefab ---
+    // --- Assign these in the Inspector for each room prefab ---
     [Header("Room Structure")]
     public GameObject[] walls; // 0 = Up, 1 = Down, 2 = Right, 3 = Left
     public GameObject[] doors; // Matches the same order as walls
@@ -20,7 +20,7 @@ public class Room3DBehavior : MonoBehaviour
     // For debugging / testing
     [HideInInspector] public bool[] testStatus;
 
-    // --- 🔹 Updates the visual layout of the room ---
+    // ---  Updates the visual layout of the room ---
     public void UpdateRoom(bool[] status)
     {
         // Status array: [0]=Up, [1]=Down, [2]=Right, [3]=Left, [4]=Above, [5]=Below
@@ -46,7 +46,7 @@ public class Room3DBehavior : MonoBehaviour
         HandleStairs(status[4], status[5]);
     }
 
-    // --- 🔹 Creates stairs for up/down connections ---
+    // --- Creates stairs for up/down connections ---
     private void HandleStairs(bool hasAbove, bool hasBelow)
     {
         // If there’s a room above → spawn upward stairs
@@ -66,7 +66,7 @@ public class Room3DBehavior : MonoBehaviour
         }
     }
 
-    // --- 🔹 (Optional) Used for visual debugging ---
+    // --- (Optional) Used for visual debugging ---
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.green;
