@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -19,11 +19,11 @@ public class BinarySpacePartitioner
         graph.Enqueue(this.rootNode);
         listToReturn.Add(this.rootNode);
         int iterations = 0;
-        while (iterations < maxIterations && graph.Count > 0)
+        while (iterations<maxIterations && graph.Count>0)
         {
             iterations++;
             RoomNode currentNode = graph.Dequeue();
-            if (currentNode.Width >= roomWidthMin * 2 || currentNode.Length >= roomLengthMin * 2)
+            if(currentNode.Width>=roomWidthMin*2 || currentNode.Length >= roomLengthMin * 2)
             {
                 SplitTheSpace(currentNode, listToReturn, roomLengthMin, roomWidthMin, graph);
             }
@@ -39,7 +39,7 @@ public class BinarySpacePartitioner
             roomWidthMin,
             roomLengthMin);
         RoomNode node1, node2;
-        if (line.Orientation == Orientation.Horizontal)
+        if(line.Orientation == Orientation.Horizontal)
         {
             node1 = new RoomNode(currentNode.BottomLeftAreaCorner,
                 new Vector2Int(currentNode.TopRightAreaCorner.x, line.Coordinates.y),
@@ -53,10 +53,10 @@ public class BinarySpacePartitioner
         else
         {
             node1 = new RoomNode(currentNode.BottomLeftAreaCorner,
-                new Vector2Int(line.Coordinates.x, currentNode.TopRightAreaCorner.y),
+                new Vector2Int(line.Coordinates.x,currentNode.TopRightAreaCorner.y),
                 currentNode,
                 currentNode.TreeLayerIndex + 1);
-            node2 = new RoomNode(new Vector2Int(line.Coordinates.x, currentNode.BottomLeftAreaCorner.y),
+            node2 = new RoomNode(new Vector2Int(line.Coordinates.x,currentNode.BottomLeftAreaCorner.y),
                 currentNode.TopRightAreaCorner,
                 currentNode,
                 currentNode.TreeLayerIndex + 1);
@@ -64,7 +64,7 @@ public class BinarySpacePartitioner
         AddNewNodeToCollections(listToReturn, graph, node1);
         AddNewNodeToCollections(listToReturn, graph, node2);
     }
-    
+
     private void AddNewNodeToCollections(List<RoomNode> listToReturn, Queue<RoomNode> graph, RoomNode node)
     {
         listToReturn.Add(node);

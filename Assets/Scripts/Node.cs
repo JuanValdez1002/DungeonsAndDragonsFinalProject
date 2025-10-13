@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 public abstract class Node
 {
     private List<Node> childrenNodeList;
 
-    public List<Node> ChildrenNodeList { get => childrenNodeList; }
+    public List<Node> ChildrenNodeList { get => childrenNodeList;}
 
     public bool Visted { get; set; }
     public Vector2Int BottomLeftAreaCorner { get; set; }
@@ -14,6 +14,8 @@ public abstract class Node
     public Vector2Int TopLeftAreaCorner { get; set; }
 
     public Node Parent { get; set; }
+
+
     public int TreeLayerIndex { get; set; }
 
     public Node(Node parentNode)
