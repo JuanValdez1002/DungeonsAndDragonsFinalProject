@@ -471,8 +471,8 @@ Transform:
   m_GameObject: {fileID: 1587078878350308264}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.47882, y: 1.32039, z: -54.04958}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 4.47882, y: 3.1, z: -54.04958}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6295920707110547691}
@@ -495,12 +495,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89bf602c885185047a89055a6e904087, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Room3DBehavior
-  walls: []
+  walls:
+  - {fileID: 1962965303206779775}
   doors: []
-  stairsUpPrefab: {fileID: 5062764817632526602, guid: 019a7d8c6912f52438739d94adf10481, type: 3}
-  stairsDownPrefab: {fileID: 7611108165191981917, guid: b5a3e009fc1adfe458671815c3a5dce4, type: 3}
-  hallwayAnchors: []
-  testStatus: 
 --- !u!1 &1898101046921267978
 GameObject:
   m_ObjectHideFlags: 0
