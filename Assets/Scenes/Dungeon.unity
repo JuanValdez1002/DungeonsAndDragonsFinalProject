@@ -136,7 +136,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &153303161
 Light:
   m_ObjectHideFlags: 0
@@ -147,7 +147,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 11
   m_Type: 1
-  m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
+  m_Color: {r: 0.5568628, g: 0.5568628, b: 0.5568628, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
@@ -592,7 +592,7 @@ CharacterController:
   m_Height: 2
   m_Radius: 0.5
   m_SlopeLimit: 45
-  m_StepOffset: 0.5
+  m_StepOffset: 0.7
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
@@ -674,9 +674,12 @@ MonoBehaviour:
   density: 0.7
   normalRooms:
   - {fileID: 2680362655156614191, guid: 4b9c67aeb5797ae4b827552a12e8211a, type: 3}
+  - {fileID: 2965150640378695258, guid: 2ddaf0e4814e13341b7989b4ebf80f6e, type: 3}
+  - {fileID: 4550331269905810028, guid: e0a2640b619ed1444ac32531001e0ffc, type: 3}
   bossRoomPrefab: {fileID: 4148825463105229786, guid: c209d0a4ba4ffe8489f550570df98549, type: 3}
   treasureRoomPrefab: {fileID: 6018804125271541114, guid: 626005fd520379545b5876c7d6492f9a, type: 3}
   player: {fileID: 0}
+  cacheLifetime: 2
 --- !u!4 &2041717222
 Transform:
   m_ObjectHideFlags: 0

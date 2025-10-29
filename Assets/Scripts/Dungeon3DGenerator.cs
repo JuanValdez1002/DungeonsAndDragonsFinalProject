@@ -392,7 +392,7 @@ public class Dungeon3DGenerator : MonoBehaviour
         int x = idx % size.x;
         int y = (idx / size.x) % size.y;
         int z = idx / (size.x * size.y);
-        return new Vector3(x * offset.x, z * offset.y, -y * offset.z);
+        return new Vector3(x * offset.x, z * offset.y, y * offset.z);
     }
 
     // ------------------------------------------------------------
