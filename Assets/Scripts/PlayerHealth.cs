@@ -3,7 +3,10 @@ using UnityEngine;
 public class PlayerHealth : MonoBehaviour
 {
     public int maxHealth = 100;
-    private int currentHealth;
+    public int currentHealth;
+
+    public TakeDamageEffect damageEffect;  
+    public CameraShake cameraShake;        
 
     void Start()
     {
@@ -13,9 +16,20 @@ public class PlayerHealth : MonoBehaviour
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
-        Debug.Log($"Player took {amount} damage. HP: {currentHealth}");
+
+        if (damageEffect != null)
+            damageEffect.FlashRed();
+
+        if (cameraShake != null)
+            cameraShake.Shake();
+
         if (currentHealth <= 0)
-            Debug.Log("Player died!");
+            Die();
+    }
+
+    void Die()
+    {
+        Debug.Log("Player has died.");
+        // TODO: Respawn system later
     }
 }
-
