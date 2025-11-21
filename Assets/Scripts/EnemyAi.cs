@@ -24,7 +24,21 @@ public class EnemyAi : MonoBehaviour
 
     private void Awake()
     {
-        player = GameObject.Find("PlayerObj").transform;
+        // Try multiple ways to find the player
+        player = GameObject.Find("PlayerObj")?.transform;
+        if (player == null)
+        {
+            player = GameObject.Find("Player")?.transform;
+        }
+        if (player == null)
+        {
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+            if (playerObj != null)
+            {
+                player = playerObj.transform;
+            }
+        }
+        
         agent = GetComponent<NavMeshAgent>();
         
         // Debug NavMeshAgent setup
@@ -39,7 +53,11 @@ public class EnemyAi : MonoBehaviour
         
         if (player == null)
         {
-            Debug.LogError("Player 'PlayerObj' not found!");
+            Debug.LogError("Player not found! Make sure player has tag 'Player' or is named 'PlayerObj' or 'Player'");
+        }
+        else
+        {
+            Debug.Log($"Player found: {player.name}");
         }
     }
 
@@ -70,6 +88,12 @@ public class EnemyAi : MonoBehaviour
             }
         }
 
+        // Check if we have necessary components before doing AI
+        if (player == null || agent == null)
+        {
+            return; // Skip AI if missing essential components
+        }
+
         //Check for sight and attack range
         playerInSightRange = Physics.CheckSphere(transform.position, sightRange, WhatIsPlayer);
         playerInAttackRange = Physics.CheckSphere(transform.position, attackRange, WhatIsPlayer);
@@ -89,6 +113,14 @@ public class EnemyAi : MonoBehaviour
             {
                 agent.SetDestination(walkPoint);
                 Debug.Log($"Enemy patrolling to: {walkPoint}, Distance: {Vector3.Distance(transform.position, walkPoint):F2}");
+                
+                // Check if path calculation failed
+                if (!agent.hasPath && agent.pathPending == false)
+                {
+                    Debug.LogWarning("Path calculation failed, searching for new walk point");
+                    walkPointSet = false;
+                    return;
+                }
             }
             else
             {
@@ -116,14 +148,19 @@ public class EnemyAi : MonoBehaviour
 
         Debug.Log($"Testing walk point: {walkPoint}, WhatIsGround LayerMask: {WhatIsGround.value}");
         
-        if (Physics.Raycast(walkPoint, -transform.up, 2f, WhatIsGround))
+        // Check if the point is on the NavMesh instead of just checking ground
+        NavMeshHit hit;
+        if (NavMesh.SamplePosition(walkPoint, out hit, walkPointRange, NavMesh.AllAreas))
         {
+            walkPoint = hit.position;
             walkPointSet = true;
-            Debug.Log($"Valid walk point found: {walkPoint}");
+            Debug.Log($"Valid NavMesh walk point found: {walkPoint}");
         }
         else
         {
-            Debug.Log($"Invalid walk point (no ground detected): {walkPoint}");
+            Debug.Log($"Invalid walk point (not on NavMesh): {walkPoint}");
+            // If no valid point found, try a simpler approach
+            walkPointSet = false;
         }
     }
 
@@ -246,12 +283,90 @@ public class EnemyAi : MonoBehaviour
     {
         health -= damage;
 
-        if (health <= 0) Invoke(nameof(DestroyEnemy), .5f);
+        if (health <= 0)
+        {
+            // Check if this enemy has a respawner component
+            EnemyRespawner respawner = GetComponent<EnemyRespawner>();
+            
+            if (respawner != null && respawner.canRespawn)
+            {
+                // Enemy will respawn - disable it temporarily
+                Invoke(nameof(DisableEnemy), .5f);
+            }
+            else
+            {
+                // No respawner - destroy permanently
+                Invoke(nameof(DestroyEnemy), .5f);
+            }
+        }
+    }
+
+    private void DisableEnemy()
+    {
+        // Disable visuals and AI but keep GameObject alive for respawning
+        GetComponent<Renderer>().enabled = false;
+        
+        // Disable all child renderers too
+        Renderer[] childRenderers = GetComponentsInChildren<Renderer>();
+        foreach (Renderer rend in childRenderers)
+        {
+            rend.enabled = false;
+        }
+        
+        // Disable the NavMeshAgent so it doesn't move
+        if (agent != null)
+        {
+            agent.enabled = false;
+        }
+        
+        // Disable colliders so player can walk through
+        Collider[] colliders = GetComponentsInChildren<Collider>();
+        foreach (Collider col in colliders)
+        {
+            col.enabled = false;
+        }
+        
+        Debug.Log($"{gameObject.name} disabled (waiting to respawn)");
     }
 
     private void DestroyEnemy()
     {
         Destroy(gameObject);
+    }
+    
+    /// <summary>
+    /// Call this when enemy respawns to re-enable everything
+    /// </summary>
+    public void OnRespawn()
+    {
+        // Re-enable visuals
+        GetComponent<Renderer>().enabled = true;
+        
+        // Re-enable all child renderers
+        Renderer[] childRenderers = GetComponentsInChildren<Renderer>();
+        foreach (Renderer rend in childRenderers)
+        {
+            rend.enabled = true;
+        }
+        
+        // Re-enable the NavMeshAgent
+        if (agent != null)
+        {
+            agent.enabled = true;
+        }
+        
+        // Re-enable colliders
+        Collider[] colliders = GetComponentsInChildren<Collider>();
+        foreach (Collider col in colliders)
+        {
+            col.enabled = true;
+        }
+        
+        // Reset attack state
+        alreadyAttacked = false;
+        walkPointSet = false;
+        
+        Debug.Log($"{gameObject.name} fully respawned and active!");
     }
 
     private void OnDrawGizmosSelected()

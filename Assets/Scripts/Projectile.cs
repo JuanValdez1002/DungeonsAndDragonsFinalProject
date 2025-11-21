@@ -5,16 +5,37 @@ public class Projectile : MonoBehaviour
     public int damage = 10;
     public float lifetime = 5.0f;
     
+    private bool hasHit = false; // Prevent multiple hits
+    
     private void Start()
     {
         // Destroy projectile after lifetime to prevent accumulation
         Destroy(gameObject, lifetime);
+        
+        // Set up rigidbody for better collision detection
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        }
+    }
+    
+    // Add trigger detection for better hit detection
+    private void OnTriggerEnter(Collider other)
+    {
+        if (hasHit) return;
+        HandleHit(other.gameObject);
     }
     
     private void OnCollisionEnter(Collision collision)
     {
-        // Check what we hit
-        GameObject hitObject = collision.gameObject;
+        if (hasHit) return;
+        HandleHit(collision.gameObject);
+    }
+    
+    private void HandleHit(GameObject hitObject)
+    {
+        hasHit = true;
         
         // If we hit the player
         if (hitObject.CompareTag("Player"))
@@ -23,7 +44,7 @@ public class Projectile : MonoBehaviour
             if (playerHealth != null)
             {
                 playerHealth.TakeDamage(damage);
-                Debug.Log($"Player hit for {damage} damage!");
+                Debug.Log($"Player hit for {damage} damage! Distance detection worked!");
             }
             else
             {
