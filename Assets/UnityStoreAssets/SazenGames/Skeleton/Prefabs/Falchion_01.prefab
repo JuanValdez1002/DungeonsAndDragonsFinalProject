@@ -62,6 +62,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e6225f7dca5ab5c44928ed351487e920, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5021813344141474750}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e6225f7dca5ab5c44928ed351487e920, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7702291267165377074}
   m_SourcePrefab: {fileID: 100100000, guid: e6225f7dca5ab5c44928ed351487e920, type: 3}
 --- !u!1 &8055904020073888615 stripped
 GameObject:
@@ -103,3 +106,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SwordHitbox
   damage: 10
   hitbox: {fileID: 3972786772946356164}
+--- !u!114 &7702291267165377074
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8055904020073888615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f06d378e6a86aae4897121f6d478694c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDamageZone
+  damage: 10
