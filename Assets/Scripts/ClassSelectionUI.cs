@@ -2,15 +2,30 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro; // Add TextMeshPro support
+using UnityEngine.EventSystems;
 
 /// <summary>
-/// Manages the class selection UI and scene
+/// Enhanced class selection UI with visual effects and animations
 /// Works with both legacy Text and TextMeshPro
 /// </summary>
 public class ClassSelectionUI : MonoBehaviour
 {
     [Header("UI References")]
     public GameObject selectionPanel;
+    public Image backgroundImage; // Main background
+    
+    [Header("Class Card GameObjects (Assign the card GameObjects, not Images)")]
+    public GameObject warriorCardObj;
+    public GameObject rangerCardObj;
+    public GameObject mageCardObj;
+    public GameObject clericCardObj;
+    
+    [Header("Class Card Panels (DO NOT assign the main card backgrounds!)")]
+    [Header("Leave these EMPTY - they are not used anymore")]
+    public Image warriorCard;
+    public Image rangerCard;
+    public Image mageCard;
+    public Image clericCard;
     
     // Support both Text types - assign whichever you have!
     [Header("Text Fields (Use Legacy Text OR TextMeshPro)")]
@@ -26,6 +41,13 @@ public class ClassSelectionUI : MonoBehaviour
     public Button mageButton;
     public Button clericButton;
     public Button startButton;
+    
+    [Header("Visual Effects")]
+    public Color normalCardColor = new Color(0.2f, 0.2f, 0.2f, 0.85f); // Dark, subtle
+    public Color selectedCardColor = new Color(0.4f, 0.35f, 0.25f, 0.95f); // Slightly brighter but still dark
+    public Color hoverCardColor = new Color(0.3f, 0.3f, 0.3f, 0.9f); // Subtle hover
+    public float cardAnimationSpeed = 5f;
+    public float hoverScale = 1.05f;
     
     [Header("Class Info Display (Legacy Text)")]
     public Text classNameDisplay;
@@ -48,27 +70,101 @@ public class ClassSelectionUI : MonoBehaviour
     public UnityEngine.Object gameSceneAsset; // Drag scene file from Project window
     
     private ClassType selectedClass = ClassType.Warrior;
+    private Image currentHoveredCard;
+    private Image currentSelectedCard;
+    private GameObject currentSelectedCardObj;
     
     void Start()
     {
-        // Setup button listeners
-        if (warriorButton != null)
-            warriorButton.onClick.AddListener(() => SelectClass(ClassType.Warrior));
-        if (rangerButton != null)
-            rangerButton.onClick.AddListener(() => SelectClass(ClassType.Ranger));
-        if (mageButton != null)
-            mageButton.onClick.AddListener(() => SelectClass(ClassType.Mage));
-        if (clericButton != null)
-            clericButton.onClick.AddListener(() => SelectClass(ClassType.Cleric));
+        // Setup button listeners with hover effects
+        SetupButton(warriorButton, ClassType.Warrior, warriorCard);
+        SetupButton(rangerButton, ClassType.Ranger, rangerCard);
+        SetupButton(mageButton, ClassType.Mage, mageCard);
+        SetupButton(clericButton, ClassType.Cleric, clericCard);
+        
         if (startButton != null)
             startButton.onClick.AddListener(StartGame);
         
         // Show warrior by default
         SelectClass(ClassType.Warrior);
         
+        // Initialize all cards to normal state
+        InitializeCards();
+        
         // Unlock cursor for menu
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+    }
+    
+    /// <summary>
+    /// Setup button with click and hover effects
+    /// </summary>
+    private void SetupButton(Button button, ClassType classType, Image cardImage)
+    {
+        if (button == null) return;
+        
+        button.onClick.AddListener(() => SelectClass(classType));
+        
+        // Add hover effects using EventTrigger
+        EventTrigger trigger = button.gameObject.GetComponent<EventTrigger>();
+        if (trigger == null)
+            trigger = button.gameObject.AddComponent<EventTrigger>();
+        
+        // Mouse enter
+        EventTrigger.Entry enterEntry = new EventTrigger.Entry();
+        enterEntry.eventID = EventTriggerType.PointerEnter;
+        enterEntry.callback.AddListener((data) => { OnCardHover(cardImage, true); });
+        trigger.triggers.Add(enterEntry);
+        
+        // Mouse exit
+        EventTrigger.Entry exitEntry = new EventTrigger.Entry();
+        exitEntry.eventID = EventTriggerType.PointerExit;
+        exitEntry.callback.AddListener((data) => { OnCardHover(cardImage, false); });
+        trigger.triggers.Add(exitEntry);
+    }
+    
+    /// <summary>
+    /// Initialize all cards to normal color
+    /// </summary>
+    private void InitializeCards()
+    {
+        // Cards are already styled by the editor script, don't override them!
+        // Leaving this empty to prevent white/bright cards
+        // if (warriorCard != null) warriorCard.color = normalCardColor;
+        // if (rangerCard != null) rangerCard.color = normalCardColor;
+        // if (mageCard != null) mageCard.color = normalCardColor;
+        // if (clericCard != null) clericCard.color = normalCardColor;
+    }
+    
+    /// <summary>
+    /// Handle card hover effects
+    /// </summary>
+    private void OnCardHover(Image card, bool isEntering)
+    {
+        // Disabled - cards keep their original styling
+        // No color changes on hover to prevent white/bright backgrounds
+        /*
+        if (card == null) return;
+        
+        if (isEntering)
+        {
+            currentHoveredCard = card;
+            // Don't change color if it's the selected card
+            if (card != currentSelectedCard)
+            {
+                card.color = hoverCardColor;
+            }
+        }
+        else
+        {
+            currentHoveredCard = null;
+            // Return to normal color unless it's selected
+            if (card != currentSelectedCard)
+            {
+                card.color = normalCardColor;
+            }
+        }
+        */
     }
     
     /// <summary>
@@ -78,6 +174,91 @@ public class ClassSelectionUI : MonoBehaviour
     {
         selectedClass = classType;
         UpdateClassDisplay(classType);
+        UpdateCardSelection(classType);
+    }
+    
+    /// <summary>
+    /// Update visual selection of class cards
+    /// </summary>
+    private void UpdateCardSelection(ClassType classType)
+    {
+        // Reset all card outlines to normal (darker)
+        ResetCardOutline(warriorCardObj);
+        ResetCardOutline(rangerCardObj);
+        ResetCardOutline(mageCardObj);
+        ResetCardOutline(clericCardObj);
+        
+        // Highlight selected card outline
+        GameObject selectedCardObj = null;
+        switch (classType)
+        {
+            case ClassType.Warrior:
+                selectedCardObj = warriorCardObj;
+                break;
+            case ClassType.Ranger:
+                selectedCardObj = rangerCardObj;
+                break;
+            case ClassType.Mage:
+                selectedCardObj = mageCardObj;
+                break;
+            case ClassType.Cleric:
+                selectedCardObj = clericCardObj;
+                break;
+        }
+        
+        if (selectedCardObj != null)
+        {
+            HighlightCardOutline(selectedCardObj);
+            currentSelectedCardObj = selectedCardObj;
+        }
+    }
+    
+    /// <summary>
+    /// Highlight a card's outline to show selection
+    /// </summary>
+    private void HighlightCardOutline(GameObject cardObj)
+    {
+        if (cardObj == null) return;
+        
+        Outline outline = cardObj.GetComponent<Outline>();
+        if (outline != null)
+        {
+            // Make outline brighter and thicker
+            Color brightColor = outline.effectColor;
+            brightColor.r = Mathf.Min(brightColor.r * 2.5f, 1f);
+            brightColor.g = Mathf.Min(brightColor.g * 2.5f, 1f);
+            brightColor.b = Mathf.Min(brightColor.b * 2.5f, 1f);
+            brightColor.a = 1f;
+            outline.effectColor = brightColor;
+            outline.effectDistance = new Vector2(5, -5); // Thicker outline
+        }
+        
+        // Optional: add slight scale effect
+        cardObj.transform.localScale = new Vector3(1.02f, 1.02f, 1f);
+    }
+    
+    /// <summary>
+    /// Reset a card's outline to normal state
+    /// </summary>
+    private void ResetCardOutline(GameObject cardObj)
+    {
+        if (cardObj == null) return;
+        
+        Outline outline = cardObj.GetComponent<Outline>();
+        if (outline != null)
+        {
+            // Return to darker outline
+            Color darkColor = outline.effectColor;
+            darkColor.r = darkColor.r / 2.5f;
+            darkColor.g = darkColor.g / 2.5f;
+            darkColor.b = darkColor.b / 2.5f;
+            darkColor.a = 1f;
+            outline.effectColor = darkColor;
+            outline.effectDistance = new Vector2(3, -3); // Normal outline thickness
+        }
+        
+        // Reset scale
+        cardObj.transform.localScale = Vector3.one;
     }
     
     /// <summary>
