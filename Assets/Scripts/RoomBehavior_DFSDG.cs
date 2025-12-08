@@ -5,10 +5,9 @@ using UnityEngine;
 public class RoomBehaviour_DFSDG : MonoBehaviour
 { 
     [Header("Enemy spawn point for this room")]
-    public Transform enemySpawnPoint;
-    public GameObject[] walls; // 0 - Up 1 -Down 2 - Right 3- Left
+    public Transform[] enemySpawnPoints;
+    public GameObject[] walls;
     public GameObject[] doors;
-   
 
     public void UpdateRoom(bool[] status)
     {
@@ -18,4 +17,5 @@ public class RoomBehaviour_DFSDG : MonoBehaviour
             walls[i].SetActive(!status[i]);
         }
     }
+
 }

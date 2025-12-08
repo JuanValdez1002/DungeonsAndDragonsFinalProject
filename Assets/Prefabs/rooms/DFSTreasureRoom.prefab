@@ -448,7 +448,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81240320295ced5449f4ef566fb12ada, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomBehaviour_DFSDG
-  enemySpawnPoint: {fileID: 949153660723435666}
+  enemySpawnPoints:
+  - {fileID: 6382306192509285580}
+  - {fileID: 3045370446918161918}
   walls:
   - {fileID: 7913436528776216305}
   - {fileID: 3851024340684948756}

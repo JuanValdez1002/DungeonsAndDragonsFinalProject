@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
+using System.Collections;
+
 
 public class AIEnemySimple : MonoBehaviour
 {
@@ -40,11 +42,25 @@ public class AIEnemySimple : MonoBehaviour
         }
 
         agent.speed = moveSpeed;
+
+        // SAFETY CHECK — ensures NavMeshAgent is ON the NavMesh
+        if (!agent.isOnNavMesh)
+            {
+                StartCoroutine(WaitForNavmesh());
+            }
     }
+
 
     void Update()
     {
         if (player == null) return;
+
+        // SAFETY CHECK — prevents the NavMeshAgent spam error 
+        if (!agent.isOnNavMesh)
+        {
+            anim.SetBool("isWalking", false);
+            return;
+        }
 
         attackTimer -= Time.deltaTime;
         float distance = Vector3.Distance(transform.position, player.position);
@@ -57,7 +73,7 @@ public class AIEnemySimple : MonoBehaviour
         }
 
         // MOVEMENT LOGIC
-        if (!isAttacking)  // no movement while attacking
+        if (!isAttacking)
         {
             if (distance < chaseRange)
             {
@@ -131,4 +147,16 @@ public class AIEnemySimple : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRange);
     }
+
+
+    IEnumerator WaitForNavmesh()
+    {
+        // Wait until the agent is properly placed on a NavMesh
+        while (!agent.isOnNavMesh)
+            yield return null;
+
+        // Once safe, set movement speed (or any other initialization)
+        agent.speed = moveSpeed;
+    }
+
 }

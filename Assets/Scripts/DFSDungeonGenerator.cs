@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Unity.AI.Navigation;      // For NavMeshSurface
-using UnityEngine.AI;          // For NavMesh.SamplePosition
+using Unity.AI.Navigation;      
+using UnityEngine.AI;          
 
 public class DFSDungeonGenerator : MonoBehaviour
 {
@@ -23,9 +23,6 @@ public class DFSDungeonGenerator : MonoBehaviour
 
         public int ProbabilityOfSpawning(int x, int y)
         {
-            // 0 = cannot spawn
-            // 1 = can spawn
-            // 2 = must spawn
             if (x >= minPosition.x && x <= maxPosition.x &&
                 y >= minPosition.y && y <= maxPosition.y)
             {
@@ -35,24 +32,18 @@ public class DFSDungeonGenerator : MonoBehaviour
         }
     }
 
-    // === PUBLIC SETTINGS ===
-    [Header("Dungeon Grid")]
     public Vector2Int size;
     public int startPos = 0;
     public Rule[] rooms;
     public Vector2 offset;
 
-    [Header("Player Spawn (optional)")]
     public GameObject player;
 
-    [Header("External NavMesh Reference (REQUIRED)")]
-    public NavMeshSurface navSurface;   // Assigned from NavMeshManager in inspector
+    public NavMeshSurface navSurface;
 
-    [Header("Enemies")]
-    public GameObject enemyPrefab;      // Skeleton enemy prefab
-    public int enemiesPerRoom = 1;      // How many per room (can be 0, 1, 2, etc.)
+    public GameObject enemyPrefab;
+    public int enemiesPerRoom = 1;
 
-    // === PRIVATE STATE ===
     private List<Cell> board;
     private List<Transform> enemySpawnPoints = new List<Transform>();
 
@@ -66,9 +57,6 @@ public class DFSDungeonGenerator : MonoBehaviour
         MazeGenerator();
     }
 
-    // ──────────────────────────────────────────────
-    // Generates the dungeon AFTER DFS finishes
-    // ──────────────────────────────────────────────
     void GenerateDungeon()
     {
         enemySpawnPoints.Clear();
@@ -85,7 +73,6 @@ public class DFSDungeonGenerator : MonoBehaviour
                 int roomIndex = -1;
                 List<int> valid = new List<int>();
 
-                // Select which room prefab to spawn
                 for (int k = 0; k < rooms.Length; k++)
                 {
                     int p = rooms[k].ProbabilityOfSpawning(i, j);
@@ -110,22 +97,28 @@ public class DFSDungeonGenerator : MonoBehaviour
                     rooms[roomIndex].room,
                     new Vector3(i * offset.x, 0, -j * offset.y),
                     Quaternion.identity,
-                    this.transform // rooms are children of generator (safe)
+                    this.transform
                 );
 
-                RoomBehaviour_DFSDG newRoom = roomGO.GetComponent<RoomBehaviour_DFSDG>();
-                newRoom.UpdateRoom(currentCell.status);
+                RoomBehaviour_DFSDG rb = roomGO.GetComponent<RoomBehaviour_DFSDG>();
+                rb.UpdateRoom(currentCell.status);
+
                 roomGO.name = $"Room {i}-{j}";
 
-                // Collect enemy spawn point if this room has one
-                if (newRoom.enemySpawnPoint != null)
+                // -----------------------------
+                // MULTIPLE SPAWN POINTS FIX ONLY
+                // -----------------------------
+                if (rb.enemySpawnPoints != null && rb.enemySpawnPoints.Length > 0)
                 {
-                    enemySpawnPoints.Add(newRoom.enemySpawnPoint);
+                    foreach (Transform sp in rb.enemySpawnPoints)
+                    {
+                        if (sp != null)
+                            enemySpawnPoints.Add(sp);
+                    }
                 }
             }
         }
 
-        // Build NavMesh (ONLY if assigned)
         StartCoroutine(DelayedNavmeshBuild());
     }
 
@@ -134,20 +127,15 @@ public class DFSDungeonGenerator : MonoBehaviour
         if (navSurface == null)
             yield break;
 
-        // Wait for all rooms to spawn and transforms to settle
         yield return new WaitForSeconds(0.25f);
 
         Debug.Log("Building runtime NavMesh...");
         navSurface.BuildNavMesh();
         Debug.Log("NavMesh build complete.");
 
-        // After NavMesh exists, spawn enemies so their NavMeshAgents are valid
         SpawnEnemies();
     }
 
-    // ──────────────────────────────────────────────
-    // DFS MAZE GENERATION ALGORITHM
-    // ──────────────────────────────────────────────
     void MazeGenerator()
     {
         board = new List<Cell>();
@@ -187,7 +175,6 @@ public class DFSDungeonGenerator : MonoBehaviour
         GenerateDungeon();
     }
 
-    // Creates openings between maze cells
     void CreatePassage(int current, int next)
     {
         int x = current % size.x;
@@ -195,57 +182,49 @@ public class DFSDungeonGenerator : MonoBehaviour
         int nx = next % size.x;
         int ny = next / size.x;
 
-        if (nx == x && ny == y + 1) // down
+        if (nx == x && ny == y + 1)
         {
             board[current].status[1] = true;
             board[next].status[0] = true;
         }
-        else if (nx == x && ny == y - 1) // up
+        else if (nx == x && ny == y - 1)
         {
             board[current].status[0] = true;
             board[next].status[1] = true;
         }
-        else if (nx == x + 1 && ny == y) // right
+        else if (nx == x + 1 && ny == y)
         {
             board[current].status[2] = true;
             board[next].status[3] = true;
         }
-        else if (nx == x - 1 && ny == y) // left
+        else if (nx == x - 1 && ny == y)
         {
             board[current].status[3] = true;
             board[next].status[2] = true;
         }
     }
 
-    // Finds unvisited neighbors
     List<int> CheckNeighbors(int cell)
     {
         List<int> result = new List<int>();
         int x = cell % size.x;
         int y = cell / size.x;
 
-        // Up
         if (y > 0 && !board[cell - size.x].visited)
             result.Add(cell - size.x);
 
-        // Down
         if (y < size.y - 1 && !board[cell + size.x].visited)
             result.Add(cell + size.x);
 
-        // Right
         if (x < size.x - 1 && !board[cell + 1].visited)
             result.Add(cell + 1);
 
-        // Left
         if (x > 0 && !board[cell - 1].visited)
             result.Add(cell - 1);
 
         return result;
     }
 
-    // ──────────────────────────────────────────────
-    // ENEMY SPAWNING AFTER NAVMESH BUILD
-    // ──────────────────────────────────────────────
     void SpawnEnemies()
     {
         if (enemyPrefab == null)
@@ -266,14 +245,9 @@ public class DFSDungeonGenerator : MonoBehaviour
         {
             for (int i = 0; i < enemiesPerRoom; i++)
             {
-                // Ensure the spawn point is on the NavMesh
                 if (NavMesh.SamplePosition(spawnPoint.position, out NavMeshHit hit, 1.0f, NavMesh.AllAreas))
                 {
                     Instantiate(enemyPrefab, hit.position, spawnPoint.rotation);
-                }
-                else
-                {
-                    Debug.LogWarning($"Enemy spawn point '{spawnPoint.name}' is not on NavMesh, skipping.");
                 }
             }
         }
