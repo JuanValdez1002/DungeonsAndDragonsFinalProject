@@ -2,18 +2,51 @@ using UnityEngine;
 
 public class InventoryUIController : MonoBehaviour
 {
-    public GameObject inventoryBar;
+    public GameObject inventoryCanvas;   // your InventoryCanvas
+    public MouseMovement mouseLook;      // drag the MouseMovement component here
+
+    bool isOpen = false;
 
     void Start()
     {
-        inventoryBar.SetActive(false);
+        if (inventoryCanvas != null)
+            inventoryCanvas.SetActive(false);
+
+        LockCursor(true);
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Tab))
         {
-            inventoryBar.SetActive(!inventoryBar.activeSelf);
+            ToggleInventory();
+        }
+    }
+
+    void ToggleInventory()
+    {
+        isOpen = !isOpen;
+
+        if (inventoryCanvas != null)
+            inventoryCanvas.SetActive(isOpen);
+
+        // Enable/disable mouse look and cursor
+        LockCursor(!isOpen);
+        if (mouseLook != null)
+            mouseLook.enabled = !isOpen;
+    }
+
+    void LockCursor(bool locked)
+    {
+        if (locked)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
     }
 }

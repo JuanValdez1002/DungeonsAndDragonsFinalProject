@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemName: 
   icon: {fileID: 0}
-  type: 0
+  type: 1
   healAmount: 0
+  worldPrefab: {fileID: 0}

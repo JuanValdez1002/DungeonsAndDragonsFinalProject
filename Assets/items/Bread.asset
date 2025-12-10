@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12700f247abcefa479a540442f37d26a, type: 3}
   m_Name: Bread
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  itemName: 
-  icon: {fileID: 0}
+  itemName: Bread
+  icon: {fileID: 21300000, guid: d952afe6b312b4f47a5be38df91cbd90, type: 3}
   type: 0
-  healAmount: 0
+  healAmount: 7
+  worldPrefab: {fileID: 7123216639868002610, guid: 04c41f00be53b0e4981be1ed41b0c5e3, type: 3}

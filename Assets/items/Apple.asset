@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12700f247abcefa479a540442f37d26a, type: 3}
   m_Name: Apple
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  itemName: 
-  icon: {fileID: 0}
+  itemName: Apple
+  icon: {fileID: 21300000, guid: d90dd71de91e3aa4f947a79d18085259, type: 3}
   type: 0
-  healAmount: 0
+  healAmount: 5
+  worldPrefab: {fileID: 1690839103930675112, guid: 273b0a646bf4f410c898f350686cf95d, type: 3}

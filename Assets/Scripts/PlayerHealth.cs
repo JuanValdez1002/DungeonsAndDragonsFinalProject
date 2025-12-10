@@ -21,15 +21,19 @@ public class PlayerHealth : MonoBehaviour
 
     private Rigidbody playerRb;
 
+    public static PlayerHealth Instance;
+
     void Start()
     {
+        Instance = this;
         currentHealth = maxHealth;
         lastDamageTime = -invulnerabilityTime;
 
         playerRb = GetComponent<Rigidbody>();
-
+        
         if (healthBar != null)
             healthBar.UpdateHealthBar(currentHealth, maxHealth);
+
     }
 
     public void TakeDamage(int amount)
