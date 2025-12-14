@@ -13,6 +13,16 @@ public class RoomBehaviour_DFSDG : MonoBehaviour
     public GameObject[] walls;
     public GameObject[] doors;
 
+    [System.Serializable] // NEW
+    public class EnemySpawnData // NEW
+    {
+        public GameObject enemyPrefab;
+        public int count = 1;
+    }
+
+    public EnemySpawnData[] enemiesToSpawn; // NEW
+
+
     public void UpdateRoom(bool[] status)
     {
         for (int i = 0; i < status.Length; i++)

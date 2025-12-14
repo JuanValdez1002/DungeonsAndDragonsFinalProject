@@ -363,7 +363,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 16.62, z: -1.99}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 5111940435220131235}
   m_Father: {fileID: 949153660723435666}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6405390809467125981
@@ -616,6 +617,7 @@ MonoBehaviour:
   - {fileID: 2982705373740625551}
   - {fileID: 869029148451138962}
   - {fileID: 8256978331387253057}
+  - {fileID: 5111940435220131235}
   walls:
   - {fileID: 7913436528776216305}
   - {fileID: 3851024340684948756}
@@ -626,6 +628,11 @@ MonoBehaviour:
   - {fileID: 2409680666713352533}
   - {fileID: 765044958977423572}
   - {fileID: 8362607013268237962}
+  enemiesToSpawn:
+  - enemyPrefab: {fileID: 1571042049591659991, guid: 61b3e3801d56a3f429556c96ea2f07d6, type: 3}
+    count: 2
+  - enemyPrefab: {fileID: 2207164578646099634, guid: 58a66f38a0ab4c743b35c2f9b86323bf, type: 3}
+    count: 1
 --- !u!1 &8810690404370159719
 GameObject:
   m_ObjectHideFlags: 0
@@ -658,6 +665,37 @@ Transform:
   - {fileID: 7090984873127685662}
   - {fileID: 2491837123504615074}
   m_Father: {fileID: 7631842835104914849}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8949014447468742721
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5111940435220131235}
+  m_Layer: 0
+  m_Name: PatrolPointE
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5111940435220131235
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8949014447468742721}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -7.46, y: 0, z: 14.49}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3658551124680938583}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9075810547740809686
 GameObject:

@@ -1,12 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Unity.AI.Navigation;      
-using UnityEngine.AI;          
+using Unity.AI.Navigation;
+using UnityEngine.AI;
 
 public class DFSDungeonGenerator : MonoBehaviour
 {
-
     [System.Serializable]
     public class Cell
     {
@@ -21,6 +20,10 @@ public class DFSDungeonGenerator : MonoBehaviour
         public Vector2Int minPosition;
         public Vector2Int maxPosition;
         public bool obligatory;
+
+        // NEW: room limiting and boss identification
+        public bool isBoss = false;      // Only one rule should have this checked
+        public int maxSpawns = -1;       // -1 = unlimited
 
         public int ProbabilityOfSpawning(int x, int y)
         {
@@ -45,8 +48,25 @@ public class DFSDungeonGenerator : MonoBehaviour
     public GameObject enemyPrefab;
     public int enemiesPerRoom = 1;
 
+    // NEW: sparsity control (limits how many cells become rooms)
+    [Header("Dungeon Sparsity Control")]
+    public int maxRooms = -1; // -1 = unlimited (fills all reachable cells)
+
     private List<Cell> board;
-    private List<Transform> enemySpawnPoints = new List<Transform>();
+
+    // NEW: spawn point + room pairing (keeps room context)
+    private class SpawnPointInfo
+    {
+        public Transform spawnPoint;
+        public RoomBehaviour_DFSDG room;
+    }
+
+    private List<SpawnPointInfo> enemySpawnPoints = new List<SpawnPointInfo>();
+
+    // NEW: room spawn tracking and boss placement
+    private Dictionary<int, int> roomSpawnCounts = new Dictionary<int, int>();
+    private int bossRuleIndex = -1;
+    private int bossCellIndex = -1;
 
     void Start()
     {
@@ -61,12 +81,14 @@ public class DFSDungeonGenerator : MonoBehaviour
     void GenerateDungeon()
     {
         enemySpawnPoints.Clear();
+        roomSpawnCounts.Clear();
 
         for (int i = 0; i < size.x; i++)
         {
             for (int j = 0; j < size.y; j++)
             {
-                Cell currentCell = board[(i + j * size.x)];
+                int cellIndex = i + j * size.x;
+                Cell currentCell = board[cellIndex];
 
                 if (!currentCell.visited)
                     continue;
@@ -74,25 +96,50 @@ public class DFSDungeonGenerator : MonoBehaviour
                 int roomIndex = -1;
                 List<int> valid = new List<int>();
 
-                for (int k = 0; k < rooms.Length; k++)
+                // NEW: force boss room at farthest cell
+                if (cellIndex == bossCellIndex && bossRuleIndex != -1)
                 {
-                    int p = rooms[k].ProbabilityOfSpawning(i, j);
+                    roomIndex = bossRuleIndex;
+                }
+                else
+                {
+                    for (int k = 0; k < rooms.Length; k++)
+                    {
+                        if (rooms[k].isBoss)
+                            continue;
 
-                    if (p == 2)
-                    {
-                        roomIndex = k;
-                        break;
+                        // NEW: enforce max spawn limit
+                        bool underLimit =
+                            rooms[k].maxSpawns < 0 ||
+                            !roomSpawnCounts.ContainsKey(k) ||
+                            roomSpawnCounts[k] < rooms[k].maxSpawns;
+
+                        if (!underLimit)
+                            continue;
+
+                        int p = rooms[k].ProbabilityOfSpawning(i, j);
+
+                        if (p == 2)
+                        {
+                            roomIndex = k;
+                            break;
+                        }
+                        else if (p == 1)
+                        {
+                            valid.Add(k);
+                        }
                     }
-                    else if (p == 1)
+
+                    if (roomIndex == -1)
                     {
-                        valid.Add(k);
+                        roomIndex = valid.Count > 0 ? valid[Random.Range(0, valid.Count)] : 0;
                     }
                 }
 
-                if (roomIndex == -1)
-                {
-                    roomIndex = valid.Count > 0 ? valid[Random.Range(0, valid.Count)] : 0;
-                }
+                // NEW: increment spawn count
+                if (!roomSpawnCounts.ContainsKey(roomIndex))
+                    roomSpawnCounts[roomIndex] = 0;
+                roomSpawnCounts[roomIndex]++;
 
                 GameObject roomGO = Instantiate(
                     rooms[roomIndex].room,
@@ -106,15 +153,19 @@ public class DFSDungeonGenerator : MonoBehaviour
 
                 roomGO.name = $"Room {i}-{j}";
 
-                // -----------------------------
-                // MULTIPLE SPAWN POINTS FIX ONLY
-                // -----------------------------
+                // UPDATED: store spawn point with room reference
                 if (rb.enemySpawnPoints != null && rb.enemySpawnPoints.Length > 0)
                 {
                     foreach (Transform sp in rb.enemySpawnPoints)
                     {
                         if (sp != null)
-                            enemySpawnPoints.Add(sp);
+                        {
+                            enemySpawnPoints.Add(new SpawnPointInfo
+                            {
+                                spawnPoint = sp,
+                                room = rb
+                            });
+                        }
                     }
                 }
             }
@@ -147,13 +198,30 @@ public class DFSDungeonGenerator : MonoBehaviour
         Stack<int> path = new Stack<int>();
         int failsafe = 0;
 
+        // NEW: track how many unique cells have been visited (sparsity)
+        int visitedCount = 0;
+
+        // NEW: clamp maxRooms if set
+        int targetRooms = maxRooms;
+        if (targetRooms < 0)
+            targetRooms = size.x * size.y;
+        else
+            targetRooms = Mathf.Clamp(targetRooms, 1, size.x * size.y);
+
         while (failsafe < 10000)
         {
             failsafe++;
-            board[currentCell].visited = true;
 
-            if (currentCell == board.Count - 1)
-                break;
+            // NEW: only count the first time we visit a cell
+            if (!board[currentCell].visited)
+            {
+                board[currentCell].visited = true;
+                visitedCount++;
+
+                // NEW: stop early to recreate sparse/organic layouts
+                if (visitedCount >= targetRooms)
+                    break;
+            }
 
             List<int> neighbors = CheckNeighbors(currentCell);
 
@@ -172,6 +240,10 @@ public class DFSDungeonGenerator : MonoBehaviour
                 currentCell = newCell;
             }
         }
+
+        // NEW: determine boss rule and farthest cell AFTER maze is built
+        bossRuleIndex = FindBossRuleIndex();
+        bossCellIndex = FindFarthestCellFromStart();
 
         GenerateDungeon();
     }
@@ -228,40 +300,145 @@ public class DFSDungeonGenerator : MonoBehaviour
 
     void SpawnEnemies()
     {
-        if (enemyPrefab == null)
-        {
-            Debug.LogWarning("DFSDungeonGenerator: enemyPrefab not assigned, no enemies spawned.");
-            return;
-        }
-
         if (enemySpawnPoints.Count == 0)
         {
             Debug.Log("DFSDungeonGenerator: No enemySpawnPoints found in rooms.");
             return;
         }
 
-        Debug.Log($"Spawning enemies at {enemySpawnPoints.Count} room spawn points.");
-
-        foreach (Transform spawnPoint in enemySpawnPoints)
+        foreach (var info in enemySpawnPoints)
         {
-            for (int i = 0; i < enemiesPerRoom; i++)
-            {
-               if (NavMesh.SamplePosition(spawnPoint.position, out NavMeshHit hit, 1.0f, NavMesh.AllAreas))
-                {
-                    GameObject enemyGO = Instantiate(enemyPrefab, hit.position, spawnPoint.rotation);
+            Transform spawnPoint = info.spawnPoint;
+            RoomBehaviour_DFSDG room = info.room;
 
-                    AIEnemySimple ai = enemyGO.GetComponent<AIEnemySimple>();
-                    if (ai != null)
+            bool hasCustomEnemies =
+                room != null &&
+                room.enemiesToSpawn != null &&
+                room.enemiesToSpawn.Length > 0;
+
+            if (hasCustomEnemies)
+            {
+                foreach (var e in room.enemiesToSpawn)
+                {
+                    if (e == null || e.enemyPrefab == null || e.count <= 0)
+                        continue;
+
+                    for (int c = 0; c < e.count; c++)
                     {
-                        ai.patrolPoints = spawnPoint
-                            .GetComponentInParent<RoomBehaviour_DFSDG>()
-                            .patrolPoints;
+                        if (NavMesh.SamplePosition(spawnPoint.position, out NavMeshHit hit, 1.0f, NavMesh.AllAreas))
+                        {
+                            GameObject enemyGO = Instantiate(e.enemyPrefab, hit.position, spawnPoint.rotation);
+
+                            AIEnemySimple ai = enemyGO.GetComponent<AIEnemySimple>();
+                            if (ai != null)
+                            {
+                                ai.patrolPoints = room.patrolPoints;
+                            }
+                        }
                     }
                 }
+            }
+            else
+            {
+                // Fallback to original behavior (does not break existing setups)
+                if (enemyPrefab == null)
+                    continue;
 
+                for (int i = 0; i < enemiesPerRoom; i++)
+                {
+                    if (NavMesh.SamplePosition(spawnPoint.position, out NavMeshHit hit, 1.0f, NavMesh.AllAreas))
+                    {
+                        GameObject enemyGO = Instantiate(enemyPrefab, hit.position, spawnPoint.rotation);
+
+                        AIEnemySimple ai = enemyGO.GetComponent<AIEnemySimple>();
+                        if (ai != null)
+                        {
+                            ai.patrolPoints = room.patrolPoints;
+                        }
+                    }
+                }
             }
         }
-      
+    }
 
+    // NEW: locate which rule is the boss
+    int FindBossRuleIndex()
+    {
+        for (int i = 0; i < rooms.Length; i++)
+        {
+            if (rooms[i] != null && rooms[i].isBoss)
+                return i;
+        }
+        return -1;
+    }
+
+    // NEW: BFS to find farthest reachable cell from startPos
+    int FindFarthestCellFromStart()
+    {
+        int start = Mathf.Clamp(startPos, 0, board.Count - 1);
+
+        // NEW: if start isn't part of the dungeon due to low maxRooms, find nearest visited cell
+        if (!board[start].visited)
+        {
+            int nearest = -1;
+            float best = float.PositiveInfinity;
+
+            Vector2Int startXY = new Vector2Int(start % size.x, start / size.x);
+
+            for (int i = 0; i < board.Count; i++)
+            {
+                if (!board[i].visited)
+                    continue;
+
+                Vector2Int xy = new Vector2Int(i % size.x, i / size.x);
+                float d = Vector2Int.Distance(startXY, xy);
+                if (d < best)
+                {
+                    best = d;
+                    nearest = i;
+                }
+            }
+
+            if (nearest == -1)
+                return -1;
+
+            start = nearest;
+        }
+
+        Queue<int> q = new Queue<int>();
+        int[] dist = new int[board.Count];
+        for (int i = 0; i < dist.Length; i++)
+            dist[i] = -1;
+
+        dist[start] = 0;
+        q.Enqueue(start);
+
+        int farthest = start;
+
+        while (q.Count > 0)
+        {
+            int cur = q.Dequeue();
+            if (dist[cur] > dist[farthest])
+                farthest = cur;
+
+            int x = cur % size.x;
+            int y = cur / size.x;
+
+            if (board[cur].status[0] && y > 0) TryVisit(cur - size.x, cur, dist, q);
+            if (board[cur].status[1] && y < size.y - 1) TryVisit(cur + size.x, cur, dist, q);
+            if (board[cur].status[2] && x < size.x - 1) TryVisit(cur + 1, cur, dist, q);
+            if (board[cur].status[3] && x > 0) TryVisit(cur - 1, cur, dist, q);
+        }
+
+        return farthest;
+    }
+
+    void TryVisit(int next, int cur, int[] dist, Queue<int> q)
+    {
+        if (board[next].visited && dist[next] == -1)
+        {
+            dist[next] = dist[cur] + 1;
+            q.Enqueue(next);
+        }
     }
 }
