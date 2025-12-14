@@ -139,7 +139,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemPickup
   data: {fileID: 11400000, guid: 0067590fc6938ab40ac6619fef44a011, type: 2}
-  pickupDelay: 0.1
+  pickupDelay: 0.2
 --- !u!65 &-9042223551196318021
 BoxCollider:
   m_ObjectHideFlags: 0

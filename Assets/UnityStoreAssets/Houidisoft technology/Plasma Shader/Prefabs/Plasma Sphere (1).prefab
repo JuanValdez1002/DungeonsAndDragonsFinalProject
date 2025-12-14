@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 9179636194231710610}
   - component: {fileID: 8505041608961247992}
   - component: {fileID: 8470815017072404163}
-  - component: {fileID: 9152280942884861615}
+  - component: {fileID: 2489765090615065701}
   m_Layer: 0
   m_Name: Plasma Sphere (1)
   m_TagString: Untagged
@@ -141,7 +141,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 2
---- !u!114 &9152280942884861615
+--- !u!114 &2489765090615065701
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -150,12 +150,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1957592409648599577}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 765e74f40bb42814782cd38e5128c8e9, type: 3}
+  m_Script: {fileID: 11500000, guid: 93acd00246a489b4fbd58c3ab113df5d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerProjectile
+  m_EditorClassIdentifier: Assembly-CSharp::MProjectile
   damage: 10
-  isExplosive: 1
-  explosionRadius: 3
+  speed: 30
+  lifetime: 3
 --- !u!1 &4990437007848177757
 GameObject:
   m_ObjectHideFlags: 0

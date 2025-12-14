@@ -39,9 +39,12 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        
+
         // ----------- GROUND CHECK -----------
         // Create an invisible sphere below the player to check if they are standing on ground
-        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance);
+        
 
         // If the player is touching the ground and falling, reset the fall velocity
         if (isGrounded && velocity.y < 0)

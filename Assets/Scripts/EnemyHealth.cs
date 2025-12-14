@@ -3,42 +3,35 @@ using UnityEngine.UI;
 
 public class EnemyHealth : MonoBehaviour
 {
-    public int maxHealth = 50;
+    public int maxHealth = 100;
     public int currentHealth;
 
-    [Header("HealthBar UI")]
-    public Image fillImage;   // This is ONLY the red "fill" image
+    public Image foregroundFill;
 
     void Start()
     {
         currentHealth = maxHealth;
-        UpdateHealthBar();
+        UpdateUI();
     }
 
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
-        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-
-        Debug.Log("Enemy damaged | HP: " + currentHealth);
-
-        UpdateHealthBar();
+        UpdateUI();
 
         if (currentHealth <= 0)
             Die();
     }
 
-    void UpdateHealthBar()
+    void UpdateUI()
     {
-        if (fillImage != null)
-        {
-            fillImage.fillAmount = (float)currentHealth / maxHealth;
-        }
+        if (foregroundFill != null)
+            foregroundFill.fillAmount = Mathf.Clamp01((float)currentHealth / maxHealth);
     }
 
     void Die()
     {
-        Debug.Log("Enemy died!");
+        Debug.Log("Enemy dead");
         Destroy(gameObject);
     }
 }

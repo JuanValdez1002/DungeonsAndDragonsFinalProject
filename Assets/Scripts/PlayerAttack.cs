@@ -6,17 +6,22 @@ public class PlayerAttack : MonoBehaviour
     public GameObject projectilePrefab; // ✅ THIS will accept a prefab
     public float projectileSpeed = 20f;
     public float fireRate = 0.3f;
+    public InventoryUIController inventoryUI;
 
     float nextFireTime;
 
     void Update()
     {
-        if (Input.GetMouseButton(0) && Time.time >= nextFireTime)
+        // Block shooting when inventory open
+        if (inventoryUI != null && inventoryUI.isOpen)
+            return;
+
+        if (Input.GetMouseButtonDown(0))
         {
-            nextFireTime = Time.time + fireRate;
             Shoot();
         }
     }
+
 
     void Shoot()
     {

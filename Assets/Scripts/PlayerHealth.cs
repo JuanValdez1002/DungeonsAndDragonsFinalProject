@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using Ilumisoft.HealthSystem;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -17,8 +18,8 @@ public class PlayerHealth : MonoBehaviour
     public HealthBarUI healthBar;
 
     [Header("Game Over Screen")]
-    public GameObject gameOverCanvas;
-
+    public GameManager gameManager;
+    private bool isdead;
     private Rigidbody playerRb;
 
     public static PlayerHealth Instance;
@@ -72,14 +73,17 @@ public class PlayerHealth : MonoBehaviour
 
     void Die()
     {
+
         Debug.Log("Player has died.");
-
-        // Show Game Over Menu
-        if (gameOverCanvas != null)
-            gameOverCanvas.SetActive(true);
-
+        
         // Freeze game
         Time.timeScale = 0f;
+
+        // Show Game Over Menu
+        if (currentHealth <= 0 && !isdead)
+            isdead = true;
+            gameManager.gameOver();
+
     }
 
     IEnumerator TemporarilyFreezePlayer()

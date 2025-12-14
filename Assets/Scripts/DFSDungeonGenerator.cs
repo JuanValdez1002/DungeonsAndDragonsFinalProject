@@ -6,6 +6,7 @@ using UnityEngine.AI;
 
 public class DFSDungeonGenerator : MonoBehaviour
 {
+
     [System.Serializable]
     public class Cell
     {
@@ -245,11 +246,22 @@ public class DFSDungeonGenerator : MonoBehaviour
         {
             for (int i = 0; i < enemiesPerRoom; i++)
             {
-                if (NavMesh.SamplePosition(spawnPoint.position, out NavMeshHit hit, 1.0f, NavMesh.AllAreas))
+               if (NavMesh.SamplePosition(spawnPoint.position, out NavMeshHit hit, 1.0f, NavMesh.AllAreas))
                 {
-                    Instantiate(enemyPrefab, hit.position, spawnPoint.rotation);
+                    GameObject enemyGO = Instantiate(enemyPrefab, hit.position, spawnPoint.rotation);
+
+                    AIEnemySimple ai = enemyGO.GetComponent<AIEnemySimple>();
+                    if (ai != null)
+                    {
+                        ai.patrolPoints = spawnPoint
+                            .GetComponentInParent<RoomBehaviour_DFSDG>()
+                            .patrolPoints;
+                    }
                 }
+
             }
         }
+      
+
     }
 }

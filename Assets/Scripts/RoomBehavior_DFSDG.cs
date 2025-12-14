@@ -4,8 +4,12 @@ using UnityEngine;
 
 public class RoomBehaviour_DFSDG : MonoBehaviour
 { 
-    [Header("Enemy spawn point for this room")]
+    [Header("Enemy spawn points")]
     public Transform[] enemySpawnPoints;
+
+    [Header("Patrol points for this room")]
+    public Transform[] patrolPoints;
+
     public GameObject[] walls;
     public GameObject[] doors;
 
@@ -17,5 +21,4 @@ public class RoomBehaviour_DFSDG : MonoBehaviour
             walls[i].SetActive(!status[i]);
         }
     }
-
 }

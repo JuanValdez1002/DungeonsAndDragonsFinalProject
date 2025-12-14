@@ -197,7 +197,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 0}
+  m_NavMeshData: {fileID: 23800000, guid: 3f99605ce58a73a48991ffb8fe9a8558, type: 2}
   m_BuildHeightMesh: 0
 --- !u!4 &74669125
 Transform:
@@ -296,7 +296,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 160630571}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1039608454}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: QuitGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &160630571
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -366,6 +378,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InventoryUIController
   inventoryCanvas: {fileID: 2090869507}
   mouseLook: {fileID: 1229215994}
+  playerAttack: {fileID: 1268390509}
+  isOpen: 0
 --- !u!4 &278970927
 Transform:
   m_ObjectHideFlags: 0
@@ -777,7 +791,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 404242196}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: GroundCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -793,7 +807,7 @@ Transform:
   m_GameObject: {fileID: 404242195}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.67, z: 0}
+  m_LocalPosition: {x: 0, y: -1.18, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -881,7 +895,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 642841772}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1039608454}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: MainMenu
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &642841772
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1435,6 +1461,52 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!1 &1039608453
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1039608455}
+  - component: {fileID: 1039608454}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1039608454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1039608453}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc876e1ce5be5074698dbc1832a783a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameOverMenu
+  gameOverUI: {fileID: 2023855739}
+  player: {fileID: 1268390503}
+--- !u!4 &1039608455
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1039608453}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 471.9344, y: 221.27008, z: -0.04868}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1089292854
 GameObject:
   m_ObjectHideFlags: 0
@@ -1612,7 +1684,7 @@ Transform:
   m_GameObject: {fileID: 1229215990}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.25, z: 0}
+  m_LocalPosition: {x: 0, y: 2.52, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1721,7 +1793,7 @@ CharacterController:
   m_StepOffset: 0.7
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!114 &1268390505
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1738,9 +1810,9 @@ MonoBehaviour:
   speed: 7
   crouchSpeed: 6
   gravity: -19.62
-  jumpHeight: 3
+  jumpHeight: 2
   groundCheck: {fileID: 404242196}
-  groundDistance: 0.4
+  groundDistance: 0.5
   groundMask:
     serializedVersion: 2
     m_Bits: 0
@@ -1784,7 +1856,7 @@ MonoBehaviour:
   damageEffect: {fileID: 0}
   cameraShake: {fileID: 0}
   healthBar: {fileID: 1273134579}
-  gameOverCanvas: {fileID: 2023855739}
+  gameManager: {fileID: 1039608454}
 --- !u!136 &1268390508
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1824,6 +1896,7 @@ MonoBehaviour:
   projectilePrefab: {fileID: 1957592409648599577, guid: 3ce62e84dab46f54a9c51523f8057ac0, type: 3}
   projectileSpeed: 20
   fireRate: 0.3
+  inventoryUI: {fileID: 278970926}
 --- !u!1 &1273134577
 GameObject:
   m_ObjectHideFlags: 0
@@ -2133,7 +2206,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1308843974}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1039608454}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: RestartLevel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1308843974
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2680,7 +2765,7 @@ Transform:
   m_GameObject: {fileID: 1740434052}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.73, z: 0}
   m_LocalScale: {x: 1.3, y: 1.8, z: 1.3}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2768,7 +2853,7 @@ Transform:
   m_GameObject: {fileID: 1745193274}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -79808616, y: 0, z: -10.72203}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2789,18 +2874,18 @@ MonoBehaviour:
   size: {x: 7, y: 7}
   startPos: 0
   rooms:
-  - room: {fileID: 8798509173062015962, guid: 58d3fee2261d2da4b83823caa0827aac, type: 3}
-    minPosition: {x: 0, y: 0}
-    maxPosition: {x: 2, y: 4}
-    obligatory: 0
   - room: {fileID: 1216156100317330191, guid: 863d8889b05e0b14b88d45108cad9403, type: 3}
     minPosition: {x: 0, y: 0}
-    maxPosition: {x: 4, y: 9}
+    maxPosition: {x: 4, y: 4}
     obligatory: 0
   - room: {fileID: 1267783580822116682, guid: 9f98cb7761d8c064e863d19e03507a59, type: 3}
     minPosition: {x: 0, y: 0}
-    maxPosition: {x: 4, y: 9}
+    maxPosition: {x: 4, y: 4}
     obligatory: 0
+  - room: {fileID: 8798509173062015962, guid: 58d3fee2261d2da4b83823caa0827aac, type: 3}
+    minPosition: {x: 0, y: 0}
+    maxPosition: {x: 2, y: 2}
+    obligatory: 1
   offset: {x: 40, y: 40}
   player: {fileID: 1268390503}
   navSurface: {fileID: 74669124}
@@ -3102,6 +3187,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc876e1ce5be5074698dbc1832a783a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameOverMenu
+  gameOverUI: {fileID: 2023855739}
+  player: {fileID: 1268390503}
 --- !u!1 &2090869507
 GameObject:
   m_ObjectHideFlags: 0
@@ -3344,6 +3431,7 @@ SceneRoots:
   - {fileID: 896692455}
   - {fileID: 691672195}
   - {fileID: 2023855743}
+  - {fileID: 1039608455}
   - {fileID: 2134625592}
   - {fileID: 2090869508}
   - {fileID: 278970927}
