@@ -7,9 +7,12 @@ public class GameManager : MonoBehaviour
 {
     public GameObject gameOverUI;
     public GameObject player;
+    public static bool IsGameOver = false;
 
     public void Start()
     {
+        IsGameOver = false;          // 🔥 RESET GAME STATE
+        Time.timeScale = 1f;         // 🔥 SAFETY RESET
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
@@ -26,7 +29,19 @@ public class GameManager : MonoBehaviour
 
     public void gameOver()
         {
-            gameOverUI.SetActive(true);
+        IsGameOver = true;
+        gameOverUI.SetActive(true);
+
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
+         // 🔥 STOP CAMERA SHAKE
+        if (Camera.main != null)
+        {
+            CameraShake shake = Camera.main.GetComponent<CameraShake>();
+            if (shake != null)
+                shake.StopShake();
+        }
         }
 
     public void RestartLevel()

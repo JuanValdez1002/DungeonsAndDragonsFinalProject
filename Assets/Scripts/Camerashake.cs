@@ -7,16 +7,32 @@ public class CameraShake : MonoBehaviour
     public float shakeMagnitude = 0.1f;
 
     private Vector3 originalPosition;
+    private Coroutine shakeCoroutine;
 
-    private void Start()
+    void Start()
     {
         originalPosition = transform.localPosition;
     }
 
     public void Shake()
     {
-        StopAllCoroutines();
-        StartCoroutine(ShakeRoutine());
+        // 🔒 Prevent shake after game over
+        if (GameManager.IsGameOver)
+            return;
+
+        StopShake();
+        shakeCoroutine = StartCoroutine(ShakeRoutine());
+    }
+
+    public void StopShake()
+    {
+        if (shakeCoroutine != null)
+        {
+            StopCoroutine(shakeCoroutine);
+            shakeCoroutine = null;
+        }
+
+        transform.localPosition = originalPosition;
     }
 
     IEnumerator ShakeRoutine()
@@ -25,7 +41,13 @@ public class CameraShake : MonoBehaviour
 
         while (elapsed < shakeDuration)
         {
-            Vector3 randomPoint = originalPosition + Random.insideUnitSphere * shakeMagnitude;
+            // 🔥 Emergency exit if game ends mid-shake
+            if (GameManager.IsGameOver)
+                break;
+
+            Vector3 randomPoint =
+                originalPosition + Random.insideUnitSphere * shakeMagnitude;
+
             transform.localPosition = randomPoint;
 
             elapsed += Time.deltaTime;
@@ -33,5 +55,6 @@ public class CameraShake : MonoBehaviour
         }
 
         transform.localPosition = originalPosition;
+        shakeCoroutine = null;
     }
 }

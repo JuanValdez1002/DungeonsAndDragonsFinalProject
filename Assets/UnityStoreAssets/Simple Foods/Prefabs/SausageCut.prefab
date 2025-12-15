@@ -226,10 +226,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e88192fa508caff47a70fb74257a793c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemPickup
-  itemName: sausage
-  icon: {fileID: 21300000, guid: 7d9f74aa0b16bbb419d15d2474721636, type: 3}
-  healAmount: 10
-  pickupPrefab: {fileID: 4018998920630544923, guid: 46cf1ac8f17099d40b6a4297d3ef5519, type: 3}
+  data: {fileID: 11400000, guid: c37cead6fade4c14cb1a8b81bbad5202, type: 2}
+  pickupDelay: 0.1
 --- !u!65 &1233648354161374626
 BoxCollider:
   m_ObjectHideFlags: 0
