@@ -44,12 +44,12 @@ public class BossEnemyAI : MonoBehaviour
 
     void Update()
     {
-        if (GameManager.IsGameOver)
+        if (GameManager.IsGameOver || GameManager.IsPaused)
         {
             agent.isStopped = true;
             anim.SetBool("ismoving", false);
 
-            anim.speed = 0f;   // 🔥 FREEZE ANIMATION
+            anim.speed = 0f;   //  FREEZE ANIMATION
             return;
         }
         else
@@ -109,7 +109,7 @@ public class BossEnemyAI : MonoBehaviour
         anim.SetTrigger("JumpAttack");
     }
 
-    // 🔥 Call this from code when LAND animation finishes
+    //  Call this from code when LAND animation finishes
     // (Animator state check or timer)
     public void EndSlam()
     {

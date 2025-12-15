@@ -39,7 +39,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        if (GameManager.IsGameOver) return;
+        if (GameManager.IsGameOver || GameManager.IsPaused) return;
 
         // ----------- GROUND CHECK -----------
         // Create an invisible sphere below the player to check if they are standing on ground

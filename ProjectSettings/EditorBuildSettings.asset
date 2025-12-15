@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Dungeon2D.unity
     guid: 7fb0614ab71f9ac4b9c595a49f7f1309
+  - enabled: 1
+    path: Assets/Scenes/BlueDungeon2D.unity
+    guid: b6c96a7a40d015a4da510ca26523b6b1
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

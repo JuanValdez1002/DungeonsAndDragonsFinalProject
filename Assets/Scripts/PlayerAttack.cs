@@ -12,7 +12,7 @@ public class PlayerAttack : MonoBehaviour
 
     void Update()
     {
-        if (GameManager.IsGameOver) return;
+        if (GameManager.IsGameOver || GameManager.IsPaused) return;
         // Block shooting when inventory open
         if (inventoryUI != null && inventoryUI.isOpen)
             return;

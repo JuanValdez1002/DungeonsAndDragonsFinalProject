@@ -17,7 +17,7 @@ public class CameraShake : MonoBehaviour
     public void Shake()
     {
         // 🔒 Prevent shake after game over
-        if (GameManager.IsGameOver)
+        if (GameManager.IsGameOver|| GameManager.IsPaused)
             return;
 
         StopShake();

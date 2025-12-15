@@ -2596,6 +2596,8 @@ MonoBehaviour:
   maxHealth: 250
   currentHealth: 250
   foregroundFill: {fileID: 5333321782561208770}
+  isBoss: 1
+  endingManager: {fileID: 0}
 --- !u!54 &313945214553330481
 Rigidbody:
   m_ObjectHideFlags: 0

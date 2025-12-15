@@ -8,6 +8,12 @@ public class EnemyHealth : MonoBehaviour
 
     public Image foregroundFill;
 
+    // ================= BOSS ENDING (ADD) =================
+    [Header("Boss Settings (optional)")]
+    public bool isBoss = false;
+    public BossDeathEnding endingManager;
+    // =====================================================
+
     void Start()
     {
         currentHealth = maxHealth;
@@ -32,6 +38,17 @@ public class EnemyHealth : MonoBehaviour
     void Die()
     {
         Debug.Log("Enemy dead");
+
+        if (isBoss)
+        {
+            BossDeathEnding ending =
+                FindObjectOfType<BossDeathEnding>();
+
+            if (ending != null)
+                ending.TriggerEnding();
+        }
+
         Destroy(gameObject);
     }
+
 }

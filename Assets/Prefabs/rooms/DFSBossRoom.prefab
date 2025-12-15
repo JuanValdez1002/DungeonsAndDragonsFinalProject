@@ -299,37 +299,6 @@ Transform:
   - {fileID: 3160117058557243116}
   m_Father: {fileID: 3567941884010311851}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &5156193638474512583
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2042971898826444093}
-  m_Layer: 0
-  m_Name: BossEnemy2
-  m_TagString: Enemy
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2042971898826444093
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5156193638474512583}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 6.67, y: -2.93, z: 6.11}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 3567941884010311851}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6162955122660062867
 GameObject:
   m_ObjectHideFlags: 0
@@ -514,7 +483,6 @@ Transform:
   - {fileID: 2300897767502144484}
   - {fileID: 7349274046391039987}
   - {fileID: 4307494999513703345}
-  - {fileID: 2042971898826444093}
   - {fileID: 8793344341579337088}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -554,7 +522,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RoomBehaviour_DFSDG
   enemySpawnPoints:
   - {fileID: 4307494999513703345}
-  - {fileID: 2042971898826444093}
+  - {fileID: 0}
   patrolPoints:
   - {fileID: 2071662969744316788}
   - {fileID: 7765612528648024505}
